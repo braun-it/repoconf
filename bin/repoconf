@@ -1,0 +1,69 @@
+#!/bin/bash
+
+#####################################################################
+#####												                               			#####
+#####		Braun-IT Repository Configuration				               	#####
+#####		(c) Philip Braun (philip@braun-bissingen.de)		        #####
+#####		2016 creation and deployment				                		#####
+#####		2017 Addition of config and error handling	         		#####
+#####													                              		#####
+#####################################################################
+
+. /etc/repoconf/repo.conf
+
+if [ $verbose == "1" ]; then
+	echo "Loading functions for Configurator" >> $repolog
+fi
+ 
+. /opt/repoconf/functions.b-it
+
+# start User Interface
+whiptail --msgbox "Welcome to the Braun-IT Repository Configurator" \
+	--title "Repository Configuration" \
+	--backtitle "Copyright Philip Braun (philip@braun-bissingen.de)" 8 78
+
+
+# Ask for new packages to build. If rpm_build is set "y", you will be prompted for the name of the package.
+# If rpm_build is set to "n", the script won't ask for a package name and continues.
+whiptail --yesno --fb --backtitle "Copyright Philip Braun (philip@braun-bissingen.de)" "Do you want to build a RPM package?" 0 0
+rpm_build=$?
+clear
+
+	if [ $rpm_build = 0 ]
+	then
+		dialog --fb --stdout --title "Package Name" \
+		--backtitle "Copyright Philip Braun (philip@braun-bissingen.de)" \
+		--inputbox "Enter the package name" 0 0 >$OUTPUT
+
+		. /opt/repoconf/build.b-it
+
+	fi
+
+# The script prompts you for the necessity of an update for the repository files
+# if the answer is yes, all packages in /root/rpm/RPMS/noarch/ are pushed into the repository-directory
+# and the repository metadata will be reloaded
+
+####################################################################
+####				                                              			####
+####	 NOTE: Repository only for CentOS 6/7 32/64 Bit	         	####
+####					                                              		####
+####################################################################
+
+
+whiptail --yesno --fb "Do you want to update the BIT-repository for CentOS 6/7" \
+	--backtitle "Copyright Philip Braun (philip@braun-bissingen.de)" 0 0
+answer=$?
+	if [ $answer = 0 ]
+	then
+		clear
+		. /opt/repoconf/reload.b-it && whiptail --title "Push new Packages" --gauge "" 5 80 0 < <(push_packages)
+		. /opt/repoconf/push.b-it && whiptail --title "reload repository" --gauge "" 5 80 0 < <(reload_repo)
+		clear
+	else
+		clear
+	fi
+
+
+if [ $verbose == "1" ]; then
+        echo "[INFO] Success!" >> $repolog
+fi
