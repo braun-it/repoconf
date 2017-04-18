@@ -1,0 +1,29 @@
+#!/bin/bash
+
+#####################################################################
+#####											                              				#####
+#####		Braun-IT Repository Configuration			              		#####
+#####		(c) Philip Braun (philip@braun-bissingen.de)	        	#####
+#####		2016 creation and deployment				                		#####
+#####		2017 Addition of config and error handling	        		#####
+#####														                              	#####
+#####################################################################
+
+# In the directory /var/www/html/repo/CentOS/ all RPM Packages for the repository were saved
+# By pushing the directory and creating the repository with it, the packages gets available in the package manager
+
+      if [ $verbose == "1" ]; then
+             echo "[INFO] Reconfigure repository with loaded packages" >> $repolog
+      fi
+
+
+  destdir="$repodir/CentOS/"
+  for arch in 6/i386 6/x86_64 7/i386 7/x86_64
+  do
+
+      pushd ${destdir}/${arch} >/dev/null 2>&1
+
+          $repocreation . &>/dev/null
+
+      popd >/dev/null 2>&1
+  done
