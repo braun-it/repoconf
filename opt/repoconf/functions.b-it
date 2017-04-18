@@ -1,0 +1,42 @@
+#!/bin/bash
+
+#####################################################################
+#####												                              			#####
+#####		Braun-IT Repository Configuration		              			#####
+#####		(c) Philip Braun (philip@braun-bissingen.de)	         	#####
+#####		2016 creation and deployment		                				#####
+#####		2017 Addition of config and error handling	        		#####
+#####												                              			#####
+#####################################################################
+
+# Create a text-file, which later will include the package name of the rpm package
+touch INPUT.txt
+
+OUTPUT="INPUT.txt"
+>$OUTPUT
+
+
+# Functions for the progress bars
+build_package () {
+for ((i=90; i<=100; i++))
+   do
+       echo $i
+       sleep 0.1
+   done
+}
+
+reload_repo () {
+for ((i=90; i<=100; i++))
+   do
+       echo $i
+       sleep 0.1
+   done
+}
+
+push_packages () {
+for ((i=80; i<=100; i++))
+   do
+       echo $i
+       sleep 0.2
+   done
+}
