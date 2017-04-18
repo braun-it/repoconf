@@ -1,0 +1,69 @@
+#!/bin/bash
+#####################################################################
+#####												                               			#####
+#####		Braun-IT Repository Configuration				              	#####
+#####		(c) Philip Braun (philip@braun-bissingen.de)	        	#####
+#####		2016 creation and deployment		                				#####
+#####		2017 Addition of config and error handling	        		#####
+#####											                              				#####
+#####################################################################
+
+rpm_spec=$(<$OUTPUT)
+rpm_file="$rpmloc/SPECS/$rpm_spec.spec"
+
+# With the "rpmbuild" command, the package will be built with the information about the package asked in the step before.
+	if [ -a "$rpm_file" ]
+	then
+		cd $rpmloc/
+		if [ $verbose == "1" ]; then
+		    echo "[INFO] build rpm package" $rpm_spec >> $repolog
+  		fi
+		rpmbuild -ba SPECS/"$rpm_spec".spec &>/dev/null
+                	if [ $? == 1 ]; then
+				echo "[ERROR] build rpm package "$rpm_spec" failed " >> $repolog
+				whiptail --title "rpm build failed" --fb \
+				 --msgbox "rpmbuild for package "$rpm_spec.spec" failed!" \
+	                         --backtitle "Copyright Philip Braun (philip@braun-bissingen.de)" 8 78
+				clear
+				exit 1
+			fi
+
+		whiptail --title "rpm build" --gauge "build rpm-package" \
+                         --backtitle "Copyright Philip Braun (philip@braun-bissingen.de)"  5 80 0 < <(build_package)
+	else
+                if [ $verbose == "1" ]; then
+                    echo "[ERROR] could not find rpm package" $rpm_spec >> $repolog
+                fi
+
+		dialog --fb --stdout --title "Package Name" \
+	               	--backtitle "Copyright Philip Braun (philip@braun-bissingen.de)" \
+               		--inputbox "Could'nt Find specified File. Please enter the package name again" 0 0 >$OUTPUT
+
+		rpm_spec=$(<$OUTPUT)
+               	rpm_file="/root/rpm/SPECS/$rpm_spec.spec"
+
+		if [ -a "$rpm_file" ]
+       	        then
+
+                	if [ $verbose == "1" ]; then
+                	    echo "[INFO] build rpm package" $rpm_spec >> $repolog
+                	fi
+               		
+			cd $rpmloc/
+               		rpmbuild -ba SPECS/"$rpm_spec".spec &>/dev/null
+                        if [ $? == 1 ]; then
+                                echo "[ERROR] build rpm package "$rpm_spec" failed " >> $repolog
+                                whiptail --title "rpm build failed" --fb \
+                                 --msgbox "rpmbuild for package "$rpm_spec.spec" failed!" \
+                                 --backtitle "Copyright Philip Braun (philip@braun-bissingen.de)" 8 78
+                                clear
+                                exit 1
+                        fi
+               		whiptail --title "rpm build" --gauge "build rpm-package" \
+			       	--backtitle "Copyright Philip Braun (philip@braun-bissingen.de)"  5 80 0 < <(build_package)
+               	else
+               		whiptail --title "not found" --fb \
+				--msgbox "The file "$rpm_spec.spec" doesn't exist!" \
+				--backtitle "Copyright Philip Braun (philip@braun-bissingen.de)" 8 78
+		fi
+	fi
