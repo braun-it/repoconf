@@ -1,11 +1,11 @@
 #!/bin/bash
 #####################################################################
-#####												                               			#####
-#####		Braun-IT Repository Configuration				              	#####
-#####		(c) Philip Braun (philip@braun-bissingen.de)	        	#####
-#####		2016 creation and deployment		                				#####
-#####		2017 Addition of config and error handling	        		#####
-#####											                              				#####
+#####		                        			#####
+#####		Braun-IT Repository Configuration              	#####
+#####		(c) Philip Braun (philip@braun-bissingen.de)  	#####
+#####		2016 creation and deployment			#####
+#####		2017 Addition of config and error handling	#####
+#####		                     				#####
 #####################################################################
 
 rpm_spec=$(<$OUTPUT)
